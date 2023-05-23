@@ -44,11 +44,11 @@
                 "Audits_Data"
             ]
         },
-        "AccountDetectionTableName": {
+        "DetectionsTableName": {
             "type": "string",
-            "defaultValue": "Account_Detection_Data",
+            "defaultValue": "Detections_Data",
             "allowedValues": [
-                "Account_Detection_Data"
+                "Detections_Data"
             ]
         },
         "EntityScoringTableName": {
@@ -70,7 +70,7 @@
                 "ERROR"
             ]
         },
-        "AccountDetectionSchedule": {
+        "DetectionsSchedule": {
             "type": "string",
             "defaultValue": "0 2/10 * * * *",
             "metadata": {
@@ -224,10 +224,10 @@
                         "BaseURL": "[parameters('VectraBaseURL')]",
                         "StartTime": "[parameters('StartTime')]",
                         "Audits_Table_Name": "[parameters('AuditsTableName')]",
-                        "Account_Detection_Table_Name": "[parameters('AccountDetectionTableName')]",
+                        "Detections_Table_Name": "[parameters('DetectionsTableName')]",
                         "Entity_Scoring_Table_Name": "[parameters('EntityScoringTableName')]",
                         "LogLevel": "[parameters('LogLevel')]",
-                        "AccountDetectionSchedule": "[parameters('AccountDetectionSchedule')]",
+                        "DetectionsSchedule": "[parameters('DetectionsSchedule')]",
                         "AuditsSchedule": "[parameters('AuditsSchedule')]",
                         "EntityScoringSchedule": "[parameters('EntityScoringSchedule')]",
                         "WEBSITE_RUN_FROM_PACKAGE": "https://aka.ms/sentinel-VectraCloudAPI-functionapp"

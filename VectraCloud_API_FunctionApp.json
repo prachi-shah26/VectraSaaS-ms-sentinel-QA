@@ -2,13 +2,13 @@
     "id": "VectraCloud",
     "title": "Vectra Cloud",
     "publisher": "Vectra",
-    "descriptionMarkdown": "The [Vectra](https://www.vectra.ai/) connector gives the capability to ingest Vectra Account Detection, Audits and Entity Scoring data into Microsoft Sentinel through the Vectra REST API. Refer to the API documentation: `https://support.vectra.ai/s/article/KB-VS-1629` for more information.",
-    "additionalRequirementBanner": "These queries and workbooks are dependent on a parser based on Kusto to work as expected. Follow the steps to use this Kusto functions alias **VectraAccountDetection** in queries and workbooks [Follow steps to get this VectraAccountDetection Kusto functions>](https://aka.ms/sentinel-VectraAccountDetection-parser), **VectraAudits** in queries and workbooks [Follow steps to get this VectraAudits Kusto functions>](https://aka.ms/sentinel-VectraAudits-parser) and **VectraEntityScoring** in queries and workbooks [Follow steps to get this VectraEntityScoring Kusto functions>](https://aka.ms/sentinel-VectraEntityScoring-parser).",
+    "descriptionMarkdown": "The [Vectra](https://www.vectra.ai/) connector gives the capability to ingest Vectra Detections, Audits and Entity Scoring data into Microsoft Sentinel through the Vectra REST API. Refer to the API documentation: `https://support.vectra.ai/s/article/KB-VS-1629` for more information.",
+    "additionalRequirementBanner": "These queries and workbooks are dependent on a parser based on Kusto to work as expected. Follow the steps to use this Kusto functions alias **VectraDetections** in queries and workbooks [Follow steps to get this VectraDetections Kusto functions>](https://aka.ms/sentinel-VectraDetections-parser), **VectraAudits** in queries and workbooks [Follow steps to get this VectraAudits Kusto functions>](https://aka.ms/sentinel-VectraAudits-parser) and **VectraEntityScoring** in queries and workbooks [Follow steps to get this VectraEntityScoring Kusto functions>](https://aka.ms/sentinel-VectraEntityScoring-parser).",
     "graphQueries": [
         {
-            "metricName": "Total Account Detection data received",
-            "legend": "Account_Detection_Data_CL",
-            "baseQuery": "Account_Detection_Data_CL"
+            "metricName": "Total Detections data received",
+            "legend": "Detections_Data_CL",
+            "baseQuery": "Detections_Data_CL"
         },
         {
             "metricName": "Total Audits data received",
@@ -23,8 +23,8 @@
     ],
     "sampleQueries": [
         {
-            "description" : "Vectra Account Detection Events - All Account Detection Events.",
-            "query": "Account_Detection_Data_CL\n | sort by TimeGenerated desc"
+            "description" : "Vectra Detections Events - All Detections Events.",
+            "query": "Detections_Data_CL\n | sort by TimeGenerated desc"
         },
         {
             "description" : "Vectra Audits Events - All Audits Events.",
@@ -37,8 +37,8 @@
     ],
     "dataTypes": [
         {
-            "name": "Account_Detection_Data_CL",
-            "lastDataReceivedQuery": "Account_Detection_Data_CL\n            | summarize Time = max(TimeGenerated)\n            | where isnotempty(Time)"
+            "name": "Detections_Data_CL",
+            "lastDataReceivedQuery": "Detections_Data_CL\n            | summarize Time = max(TimeGenerated)\n            | where isnotempty(Time)"
         },
         {
             "name": "Audits_Data_CL",
@@ -53,7 +53,7 @@
         {
             "type": "IsConnectedQuery",
             "value": [
-                "Account_Detection_Data_CL\n            | summarize LastLogReceived = max(TimeGenerated)\n            | project IsConnected = LastLogReceived > ago(30d)"
+                "Detections_Data_CL\n            | summarize LastLogReceived = max(TimeGenerated)\n            | project IsConnected = LastLogReceived > ago(30d)"
             ]
         },
         {
@@ -115,7 +115,7 @@
             "description": ">**(Optional Step)** Securely store workspace and API authorization key(s) or token(s) in Azure Key Vault. Azure Key Vault provides a secure mechanism to store and retrieve key values. [Follow these instructions](https://docs.microsoft.com/azure/app-service/app-service-key-vault-references) to use Azure Key Vault with an Azure Function App."
         },
 		{
-			"description": ">**NOTE:** This data connector depends on a parser based on a Kusto Function to work as expected. Follow these steps for [Account Detection Parser](https://aka.ms/sentinel-VectraAccountDetection-parser), [Audits Parser](https://aka.ms/sentinel-VectraAudits-parser) and [Entity Scoring Parser](https://aka.ms/sentinel-VectraEntityScoring-parser) to create the Kusto functions alias, **VectraAccountDetection**, **VectraAudits** and **VectraEntityScoring**"
+			"description": ">**NOTE:** This data connector depends on a parser based on a Kusto Function to work as expected. Follow these steps for [Detections Parser](https://aka.ms/sentinel-VectraDetections-parser), [Audits Parser](https://aka.ms/sentinel-VectraAudits-parser) and [Entity Scoring Parser](https://aka.ms/sentinel-VectraEntityScoring-parser) to create the Kusto functions alias, **VectraDetections**, **VectraAudits** and **VectraEntityScoring**"
 		},
         {
             "title": "",
@@ -146,7 +146,7 @@
         },
         {
             "title": "Option 1 - Azure Resource Manager (ARM) Template",
-            "description": "Use this method for automated deployment of the Vectra connector.\n\n1. Click the **Deploy to Azure** button below. \n\n\t[![Deploy To Azure](https://aka.ms/deploytoazurebutton)](https://aka.ms/sentinel-VectraCloudAPI-azuredeploy)\n2. Select the preferred **Subscription**, **Resource Group** and **Location**. \n3. Enter the below information : \n\t\tFunction Name \n\t\tWorkspace ID \n\t\tWorkspace Key \n\t\tVectra Base URL (https://<vectra-portal-url>) \n\t\tVectra Client ID \n\t\tVectra Client Secret \n\t\tStartTime (in MM/DD/YYYY HH:MM:SS Format) \n\t\tAudits Table Name \n\t\tAccount Detection Table Name \n\t\tEntity Scoring Table Name \n\t\tLog Level (Default: INFO) \n\t\tAccount Detection Schedule \n\t\tAudits Schedule \n\t\tEntity Scoring Schedule \n4. Mark the checkbox labeled **I agree to the terms and conditions stated above**. \n5. Click **Purchase** to deploy."
+            "description": "Use this method for automated deployment of the Vectra connector.\n\n1. Click the **Deploy to Azure** button below. \n\n\t[![Deploy To Azure](https://aka.ms/deploytoazurebutton)](https://aka.ms/sentinel-VectraCloudAPI-azuredeploy)\n2. Select the preferred **Subscription**, **Resource Group** and **Location**. \n3. Enter the below information : \n\t\tFunction Name \n\t\tWorkspace ID \n\t\tWorkspace Key \n\t\tVectra Base URL (https://<vectra-portal-url>) \n\t\tVectra Client ID \n\t\tVectra Client Secret \n\t\tStartTime (in MM/DD/YYYY HH:MM:SS Format) \n\t\tAudits Table Name \n\t\tDetections Table Name \n\t\tEntity Scoring Table Name \n\t\tLog Level (Default: INFO) \n\t\tDetections Schedule \n\t\tAudits Schedule \n\t\tEntity Scoring Schedule \n4. Mark the checkbox labeled **I agree to the terms and conditions stated above**. \n5. Click **Purchase** to deploy."
         },
         {
             "title": "Option 2 - Manual Deployment of Azure Functions",
@@ -158,7 +158,7 @@
         },
         {
             "title": "",
-            "description": "**2. Configure the Function App**\n\n1. In the Function App, select the Function App Name and select **Configuration**.\n2. In the **Application settings** tab, select **+ New application setting**.\n3. Add each of the following application settings individually, with their respective values (case-sensitive): \n\t\tWorkspace ID \n\t\tWorkspace Key \n\t\tVectra Base URL (https://<vectra-portal-url>) \n\t\tVectra Client ID \n\t\tVectra Client Secret \n\t\tStartTime (in MM/DD/YYYY HH:MM:SS Format) \n\t\tAudits Table Name \n\t\tAccount Detection Table Name \n\t\tEntity Scoring Table Name \n\t\tLog Level (Default: INFO) \n\t\tAccount Detection Schedule \n\t\tAudits Schedule \n\t\tEntity Scoring Schedule \n\t\tlogAnalyticsUri (optional) \n - Use logAnalyticsUri to override the log analytics API endpoint for dedicated cloud. For example, for public cloud, leave the value empty; for Azure GovUS cloud environment, specify the value in the following format: `https://<CustomerId>.ods.opinsights.azure.us`.\n4. Once all application settings have been entered, click **Save**."
+            "description": "**2. Configure the Function App**\n\n1. In the Function App, select the Function App Name and select **Configuration**.\n2. In the **Application settings** tab, select **+ New application setting**.\n3. Add each of the following application settings individually, with their respective values (case-sensitive): \n\t\tWorkspace ID \n\t\tWorkspace Key \n\t\tVectra Base URL (https://<vectra-portal-url>) \n\t\tVectra Client ID \n\t\tVectra Client Secret \n\t\tStartTime (in MM/DD/YYYY HH:MM:SS Format) \n\t\tAudits Table Name \n\t\tDetections Table Name \n\t\tEntity Scoring Table Name \n\t\tLog Level (Default: INFO) \n\t\tDetections Schedule \n\t\tAudits Schedule \n\t\tEntity Scoring Schedule \n\t\tlogAnalyticsUri (optional) \n - Use logAnalyticsUri to override the log analytics API endpoint for dedicated cloud. For example, for public cloud, leave the value empty; for Azure GovUS cloud environment, specify the value in the following format: `https://<CustomerId>.ods.opinsights.azure.us`.\n4. Once all application settings have been entered, click **Save**."
         }
     ]
 }

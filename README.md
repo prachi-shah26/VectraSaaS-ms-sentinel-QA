@@ -11,8 +11,8 @@ This folder contains the Azure function time trigger code for Vectra Data Connec
 
 1. `VectraDataConnector/` - This contains the package, requirements, ARM JSON file, connector page template JSON, and other dependencies.
 
-2. `AccountDetection/` - This contains the Azure function source code to ingest the data of the below mentioned endpoint.
-    * Account Detection Data
+2. `Detections/` - This contains the Azure function source code to ingest the data of the below mentioned endpoint.
+    * Detections Data
 
 3. `Audits/` - This contains the Azure function source code to ingest the data of the below mentioned endpoint.
     * Audits Data
@@ -42,10 +42,10 @@ Vectra Client Id  | None
 Vectra Client Secret Key | None
 Start Time  | None(current time)
 Audits Table Name  | Audits_Data
-Account Detection Table Name | Account_Detection_Data
+Detections Table Name | Detections_Data
 Entity Scoring Table Name  | Entity_Scoring_Data
 Log Level  | INFO
-Account Detection Schedule  | 0 2/10 * * * *
+Detections Schedule  | 0 2/10 * * * *
 Audits Schedule  | 0 5/10 * * * *
 Entity Scoring Schedule  | 0 8/10 * * * *
 
