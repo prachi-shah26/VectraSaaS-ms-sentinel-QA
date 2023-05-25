@@ -230,7 +230,7 @@
                         "DetectionsSchedule": "[parameters('DetectionsSchedule')]",
                         "AuditsSchedule": "[parameters('AuditsSchedule')]",
                         "EntityScoringSchedule": "[parameters('EntityScoringSchedule')]",
-                        "WEBSITE_RUN_FROM_PACKAGE": "https://github.com/prachi-shah26/VectraSaaS-ms-sentinel-QA/blob/main/DataConnector-VectraSaaS-ms-sentinel-D-2.0.0-6.zip?raw=true"
+                        "WEBSITE_RUN_FROM_PACKAGE": "https://aka.ms/sentinel-VectraCloudAPI-functionapp"
                     }
                 }
             ]
