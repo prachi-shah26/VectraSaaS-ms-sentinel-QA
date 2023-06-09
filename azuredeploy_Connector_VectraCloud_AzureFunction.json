@@ -58,6 +58,13 @@
                 "Entity_Scoring_Data"
             ]
         },
+        "LockdownTableName": {
+            "type": "string",
+            "defaultValue": "Lockdown_Data",
+            "allowedValues": [
+                "Lockdown_Data"
+            ]
+        },
         "LogLevel": {
             "type": "string",
             "defaultValue": "INFO",
@@ -69,6 +76,13 @@
                 "INFO",
                 "ERROR"
             ]
+        },
+        "LockdownSchedule": {
+            "type": "string",
+            "defaultValue": "0 0/10 * * * *",
+            "metadata": {
+                "description": "Enter a valid Quartz cron-expression. The default value is every 10 minutes starting from Minute :00 of every hour."
+            }
         },
         "DetectionsSchedule": {
             "type": "string",
@@ -226,11 +240,13 @@
                         "Audits_Table_Name": "[parameters('AuditsTableName')]",
                         "Detections_Table_Name": "[parameters('DetectionsTableName')]",
                         "Entity_Scoring_Table_Name": "[parameters('EntityScoringTableName')]",
+                        "Lockdown_Table_Name": "[parameters('LockdownTableName')]",
                         "LogLevel": "[parameters('LogLevel')]",
                         "DetectionsSchedule": "[parameters('DetectionsSchedule')]",
                         "AuditsSchedule": "[parameters('AuditsSchedule')]",
                         "EntityScoringSchedule": "[parameters('EntityScoringSchedule')]",
-                        "WEBSITE_RUN_FROM_PACKAGE": "https://github.com/prachi-shah26/VectraSaaS-ms-sentinel-QA/blob/main/DataConnector-VectraSaaS-ms-sentinel-D-2.0.0-13.zip?raw=true"
+                        "LockdownSchedule": "[parameters('LockdownSchedule')]",
+                        "WEBSITE_RUN_FROM_PACKAGE": "https://aka.ms/sentinel-VectraCloudAPI-functionapp"
                     }
                 }
             ]
