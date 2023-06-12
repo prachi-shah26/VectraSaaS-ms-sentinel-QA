@@ -29,6 +29,14 @@
                   "linkLabel": "Audit",
                   "subTarget": "Audit",
                   "style": "link"
+                },
+                {
+                  "id": "919866f6-87e0-479f-969f-eedc7d970251",
+                  "cellValue": "setTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "Lockdown",
+                  "subTarget": "Lockdown",
+                  "style": "link"
                 }
               ]
             },
@@ -1013,6 +1021,161 @@
             "styleSettings": {
               "margin": "10px"
             }
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "items": [
+                {
+                  "type": 9,
+                  "content": {
+                    "version": "KqlParameterItem/1.0",
+                    "parameters": [
+                      {
+                        "id": "ea3f10f3-aa7e-481c-9d4f-7939d1a463a1",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "TimeRange",
+                        "label": "TIme Range",
+                        "type": 4,
+                        "isRequired": true,
+                        "typeSettings": {
+                          "selectableValues": [
+                            {
+                              "durationMs": 300000
+                            },
+                            {
+                              "durationMs": 900000
+                            },
+                            {
+                              "durationMs": 1800000
+                            },
+                            {
+                              "durationMs": 3600000
+                            },
+                            {
+                              "durationMs": 14400000
+                            },
+                            {
+                              "durationMs": 43200000
+                            },
+                            {
+                              "durationMs": 86400000
+                            },
+                            {
+                              "durationMs": 172800000
+                            },
+                            {
+                              "durationMs": 259200000
+                            },
+                            {
+                              "durationMs": 604800000
+                            },
+                            {
+                              "durationMs": 1209600000
+                            },
+                            {
+                              "durationMs": 2419200000
+                            },
+                            {
+                              "durationMs": 2592000000
+                            },
+                            {
+                              "durationMs": 5184000000
+                            },
+                            {
+                              "durationMs": 7776000000
+                            }
+                          ],
+                          "allowCustom": true
+                        },
+                        "timeContext": {
+                          "durationMs": 86400000
+                        },
+                        "value": {
+                          "durationMs": 604800000
+                        }
+                      },
+                      {
+                        "id": "7df89745-bea2-4a36-9c0a-4e64a01a0423",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "EntityType",
+                        "label": "Entity Type",
+                        "type": 2,
+                        "isRequired": true,
+                        "multiSelect": true,
+                        "quote": "'",
+                        "delimiter": ",",
+                        "query": "VectraLockdown\r\n| where [\"Locked Date\"] {TimeRange} or [\"Unlock Date\"] {TimeRange}\r\n| distinct Type\r\n| extend cap = toupper(substring(Type,0,1)), rest_string = substring(Type,1)\r\n| extend Captilized_type = strcat(cap,rest_string)\r\n| distinct ['Type'], Captilized_type",
+                        "typeSettings": {
+                          "additionalResourceOptions": [
+                            "value::all"
+                          ],
+                          "selectAllValue": "*",
+                          "showDefault": false
+                        },
+                        "defaultValue": "value::all",
+                        "queryType": 0,
+                        "resourceType": "microsoft.operationalinsights/workspaces"
+                      },
+                      {
+                        "id": "90c8487a-b24b-420e-8a70-73baad8d3301",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "EntityLocked",
+                        "label": "Entity Locked",
+                        "type": 2,
+                        "isRequired": true,
+                        "typeSettings": {
+                          "additionalResourceOptions": [],
+                          "showDefault": false
+                        },
+                        "jsonData": "[\r\n    { \"value\":\"True\", \"label\":\"True\", \"selected\":true },\r\n    { \"value\":\"False\", \"label\":\"False\"}\r\n]"
+                      }
+                    ],
+                    "style": "pills",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces"
+                  },
+                  "name": "parameters - 0"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "VectraLockdown\r\n| where [\"Locked Date\"] {TimeRange} or [\"Unlock Date\"] {TimeRange}\r\n| summarize arg_max(TimeGenerated,*) by [\"Entity Name\"], Type, [\"Locked Date\"], [\"Unlock Date\"], [\"Locked By\"]\r\n| where ('*' in ({EntityType}) or Type in ({EntityType}))\r\n| extend current_status = case(now() <= [\"Unlock Date\"], \"True\", \"False\")\r\n| where ('*' == '{EntityLocked}' or current_status == '{EntityLocked}')\r\n| sort by [\"Locked Date\"] desc\r\n| project [\"Entity Name\"], [\"Entity Type\"] = Type, [\"Entity Locked\"] = current_status, [\"Locked By\"], [\"Locked Date\"], [\"Unlock Date\"]",
+                    "size": 0,
+                    "showAnalytics": true,
+                    "title": "Lockdown View",
+                    "showRefreshButton": true,
+                    "showExportToExcel": true,
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces",
+                    "gridSettings": {
+                      "rowLimit": 10000,
+                      "filter": true
+                    }
+                  },
+                  "name": "query - 1",
+                  "styleSettings": {
+                    "showBorder": true
+                  }
+                },
+                {
+                  "type": 1,
+                  "content": {
+                    "json": "📝 ***Refresh the web page to fetch details of recently collected events***"
+                  },
+                  "name": "text - 2"
+                }
+              ]
+            },
+            "conditionalVisibility": {
+              "parameterName": "setTab",
+              "comparison": "isEqualTo",
+              "value": "Lockdown"
+            },
+            "name": "lockdown"
           }
         ]
       },
