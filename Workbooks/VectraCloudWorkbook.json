@@ -377,7 +377,7 @@
                         "type": 3,
                         "content": {
                           "version": "KqlItem/1.0",
-                          "query": "VectraDetections\r\n| where ['Last Updated'] {timerange} and URL == '{P_deep_url}'\r\n| summarize arg_max(['Last Updated'],*) by ['Detection Name']\r\n| extend ['Data Source Type'] = case(['Entity UID'] startswith \"AWS\", \"AWS\", \r\n                                        ['Entity UID'] startswith \"SAML\", \"AWS\",\r\n                                        ['Entity UID'] startswith \"O365\", \"M365/AAD\",\r\n                                        ['Entity UID'] startswith \"M365\", \"M365/AAD\",\r\n                                        ['Entity UID'] startswith \"Azure\", \"M365/AAD\",\"Network\")\r\n| extend ['Entity Name'] = extract(\"^(AWS:|SAML:|O365:|M365:|Azure:)?(.*)$\",2,['Entity UID'])\r\n| extend ['Detection Category'] = case(['Detection Category']==\"botnet\",\"Botnet\",['Detection Category']==\"command_and_control\",\"Command and Control\",['Detection Category']==\"reconnaissance\",\"Reconnaissance\",['Detection Category']==\"lateral_movement\",\"Lateral Movement\",['Detection Category']==\"exfiltration\",\"Exfiltration\",\"Unknown\")\r\n| project ['Last Updated'], ['Entity ID'], ['Detection Name'], ['Data Source Type'], ['Entity Name'], ['Vectra Pivot'], ['Is Triaged'], ['Detection Category'], Severity\r\n| sort by ['Last Updated'] desc",
+                          "query": "VectraDetections\r\n| where ['Last Updated'] {timerange} and URL == '{P_deep_url}'\r\n| summarize arg_max(['Last Updated'],*) by ['Detection Name']\r\n| extend ['Data Source Type'] = case(['Entity UID'] startswith \"AWS\", \"AWS\", \r\n                                        ['Entity UID'] startswith \"SAML\", \"AWS\",\r\n                                        ['Entity UID'] startswith \"O365\", \"M365/AAD\",\r\n                                        ['Entity UID'] startswith \"M365\", \"M365/AAD\",\r\n                                        ['Entity UID'] startswith \"Azure\", \"M365/AAD\",\"Network\")\r\n| extend ['Entity Name'] = extract(\"^(AWS:|SAML:|O365:|M365:|Azure:)?(.*)$\",2,['Entity UID'])\r\n| extend ['Detection Category'] = case(['Detection Category']==\"botnet\",\"Botnet\",['Detection Category']==\"command_and_control\",\"Command and Control\",['Detection Category']==\"reconnaissance\",\"Reconnaissance\",['Detection Category']==\"lateral_movement\",\"Lateral Movement\",['Detection Category']==\"exfiltration\",\"Exfiltration\",\"Unknown\")\r\n| extend [\"Detection Details\"] = parse_json([\"Detection Details\"])\r\n| extend [\"Detection Details\"] = bag_pack(\"event_name\",[\"Detection Details\"][0].event_name,\"event_id\",[\"Detection Details\"][0].event_id,\"account_id\",[\"Detection Details\"][0].account_id,\"src_external_host\",[\"Detection Details\"][0].src_external_host)\r\n| project ['Last Updated'], ['Entity ID'], ['Detection Name'], ['Data Source Type'], ['Entity Name'], ['Vectra Pivot'], ['Is Triaged'], ['Detection Category'], Severity, ['Detection Details']\r\n| sort by ['Last Updated'] desc",
                           "size": 0,
                           "showAnalytics": true,
                           "title": "Detection List",
@@ -395,6 +395,14 @@
                                 "formatter": 7,
                                 "formatOptions": {
                                   "linkTarget": "Url"
+                                }
+                              },
+                              {
+                                "columnMatch": "Detection Details",
+                                "formatter": 7,
+                                "formatOptions": {
+                                  "linkTarget": "CellDetails",
+                                  "linkIsContextBlade": true
                                 }
                               },
                               {
@@ -436,7 +444,7 @@
                         "type": 3,
                         "content": {
                           "version": "KqlItem/1.0",
-                          "query": "VectraDetections\r\n| where ['Last Updated'] {timerange} and URL == '{P_deep_url}'\r\n| summarize arg_max(['Last Updated'],*) by ['Detection Name']\r\n| where ['Vectra Pivot'] == '{P_detection_url}'\r\n| extend ['Detection Category'] = case(['Detection Category']==\"botnet\",\"Botnet\",['Detection Category']==\"command_and_control\",\"Command and Control\",['Detection Category']==\"reconnaissance\",\"Reconnaissance\",['Detection Category']==\"lateral_movement\",\"Lateral Movement\",['Detection Category']==\"exfiltration\",\"Exfiltration\",\"Unknown\")\r\n| project ID, ['Detection Category'], Threat, Certainty, ['Is Triaged'], [\"Detection Name\"], [\"D Type Vname\"], [\"Detection ID\"], [\"Vectra Pivot\"], [\"Entity ID\"], URL, [\"Entity UID\"], [\"Last Updated\"], [\"Detection Details\"], Severity",
+                          "query": "VectraDetections\r\n| where ['Last Updated'] {timerange} and URL == '{P_deep_url}'\r\n| summarize arg_max(['Last Updated'],*) by ['Detection Name']\r\n| where ['Vectra Pivot'] == '{P_detection_url}'\r\n| extend ['Detection Category'] = case(['Detection Category']==\"botnet\",\"Botnet\",['Detection Category']==\"command_and_control\",\"Command and Control\",['Detection Category']==\"reconnaissance\",\"Reconnaissance\",['Detection Category']==\"lateral_movement\",\"Lateral Movement\",['Detection Category']==\"exfiltration\",\"Exfiltration\",\"Unknown\")\r\n| extend [\"Detection Details\"] = parse_json([\"Detection Details\"])[0]\r\n| project ID, ['Detection Category'], Threat, Certainty, ['Is Triaged'], [\"Detection Name\"], [\"D Type Vname\"], [\"Detection ID\"], [\"Vectra Pivot\"], [\"Entity ID\"], URL, [\"Entity UID\"], [\"Last Updated\"], [\"Detection Details\"], Severity",
                           "size": 4,
                           "showAnalytics": true,
                           "title": "Selected Detection List Data",
@@ -459,6 +467,14 @@
                                 "formatter": 7,
                                 "formatOptions": {
                                   "linkTarget": "Url"
+                                }
+                              },
+                              {
+                                "columnMatch": "Detection Details",
+                                "formatter": 7,
+                                "formatOptions": {
+                                  "linkTarget": "CellDetails",
+                                  "linkIsContextBlade": true
                                 }
                               }
                             ]
@@ -716,7 +732,7 @@
                         "type": 3,
                         "content": {
                           "version": "KqlItem/1.0",
-                          "query": "VectraDetections\r\n| where ['Last Updated'] {TimeRange}\r\n| summarize arg_max(['Last Updated'],*) by ['Detection Name'], URL\r\n| extend ['Data Source Type'] = case(['Entity UID'] startswith \"AWS\", \"AWS\", \r\n                                        ['Entity UID'] startswith \"SAML\", \"AWS\",\r\n                                        ['Entity UID'] startswith \"O365\", \"M365/AAD\",\r\n                                        ['Entity UID'] startswith \"M365\", \"M365/AAD\",\r\n                                        ['Entity UID'] startswith \"Azure\", \"M365/AAD\",\"Network\")\r\n| extend ['Entity Name'] = extract(\"^(AWS:|SAML:|O365:|M365:|Azure:)?(.*)$\",2,['Entity UID'])\r\n| where ('*' in ({DataSource}) or ['Data Source Type'] in ({DataSource}))\r\n| where ('*' in ({DetectionCategory}) or ['Detection Category'] in ({DetectionCategory})) and ('*' in ({DetectionType}) or ['Detection Name'] in ({DetectionType}))\r\n| extend ['Detection Category'] = case(['Detection Category']==\"botnet\",\"Botnet\",['Detection Category']==\"command_and_control\",\"Command and Control\",['Detection Category']==\"reconnaissance\",\"Reconnaissance\",['Detection Category']==\"lateral_movement\",\"Lateral Movement\",['Detection Category']==\"exfiltration\",\"Exfiltration\",\"Unknown\")\r\n| project ['Last Updated'], ['Entity ID'], ['Detection Name'], ['Data Source Type'], ['Entity Name'], ['Vectra Pivot'], ['Is Triaged'], ['Detection Category'], Severity\r\n| sort by ['Last Updated'] desc",
+                          "query": "VectraDetections\r\n| where ['Last Updated'] {TimeRange}\r\n| summarize arg_max(['Last Updated'],*) by ['Detection Name'], URL\r\n| extend ['Data Source Type'] = case(['Entity UID'] startswith \"AWS\", \"AWS\", \r\n                                        ['Entity UID'] startswith \"SAML\", \"AWS\",\r\n                                        ['Entity UID'] startswith \"O365\", \"M365/AAD\",\r\n                                        ['Entity UID'] startswith \"M365\", \"M365/AAD\",\r\n                                        ['Entity UID'] startswith \"Azure\", \"M365/AAD\",\"Network\")\r\n| extend ['Entity Name'] = extract(\"^(AWS:|SAML:|O365:|M365:|Azure:)?(.*)$\",2,['Entity UID'])\r\n| where ('*' in ({DataSource}) or ['Data Source Type'] in ({DataSource}))\r\n| where ('*' in ({DetectionCategory}) or ['Detection Category'] in ({DetectionCategory})) and ('*' in ({DetectionType}) or ['Detection Name'] in ({DetectionType}))\r\n| extend ['Detection Category'] = case(['Detection Category']==\"botnet\",\"Botnet\",['Detection Category']==\"command_and_control\",\"Command and Control\",['Detection Category']==\"reconnaissance\",\"Reconnaissance\",['Detection Category']==\"lateral_movement\",\"Lateral Movement\",['Detection Category']==\"exfiltration\",\"Exfiltration\",\"Unknown\")\r\n| extend [\"Detection Details\"] = parse_json([\"Detection Details\"])\r\n| extend [\"Detection Details\"] = bag_pack(\"event_name\",[\"Detection Details\"][0].event_name,\"event_id\",[\"Detection Details\"][0].event_id,\"account_id\",[\"Detection Details\"][0].account_id,\"src_external_host\",[\"Detection Details\"][0].src_external_host)\r\n| project ['Last Updated'], ['Entity ID'], ['Detection Name'], ['Data Source Type'], ['Entity Name'], ['Vectra Pivot'], ['Is Triaged'], ['Detection Category'], Severity, [\"Detection Details\"], ['Source IP']\r\n| sort by ['Last Updated'] desc",
                           "size": 0,
                           "showAnalytics": true,
                           "title": "Detection View",
@@ -734,6 +750,14 @@
                                 "formatter": 7,
                                 "formatOptions": {
                                   "linkTarget": "Url"
+                                }
+                              },
+                              {
+                                "columnMatch": "Detection Details",
+                                "formatter": 7,
+                                "formatOptions": {
+                                  "linkTarget": "CellDetails",
+                                  "linkIsContextBlade": true
                                 }
                               }
                             ],
@@ -757,7 +781,7 @@
                         "type": 3,
                         "content": {
                           "version": "KqlItem/1.0",
-                          "query": "VectraDetections\r\n| where ['Last Updated'] {TimeRange}\r\n| summarize arg_max(['Last Updated'],*) by ['Detection Name'], URL\r\n| extend ['Data Source Type'] = case(['Entity UID'] startswith \"AWS\", \"AWS\", \r\n                                        ['Entity UID'] startswith \"SAML\", \"AWS\",\r\n                                        ['Entity UID'] startswith \"O365\", \"M365/AAD\",\r\n                                        ['Entity UID'] startswith \"M365\", \"M365/AAD\",\r\n                                        ['Entity UID'] startswith \"Azure\", \"M365/AAD\",\"Network\")\r\n| where ('*' in ({DataSource}) or ['Data Source Type'] in ({DataSource}))\r\n| where ('*' in ({DetectionCategory}) or ['Detection Category'] in ({DetectionCategory})) and ('*' in ({DetectionType}) or ['Detection Name'] in ({DetectionType})) and ['Vectra Pivot'] == '{P_detection_link}'\r\n| extend ['Detection Category'] = case(['Detection Category']==\"botnet\",\"Botnet\",['Detection Category']==\"command_and_control\",\"Command and Control\",['Detection Category']==\"reconnaissance\",\"Reconnaissance\",['Detection Category']==\"lateral_movement\",\"Lateral Movement\",['Detection Category']==\"exfiltration\",\"Exfiltration\",\"Unknown\")\r\n| project ID, ['Detection Category'], Threat, Certainty, ['Is Triaged'], [\"Detection Name\"], [\"D Type Vname\"], [\"Detection ID\"], [\"Vectra Pivot\"], [\"Entity ID\"], URL, [\"Entity UID\"], [\"Last Updated\"], [\"Detection Details\"], Severity",
+                          "query": "VectraDetections\r\n| where ['Last Updated'] {TimeRange}\r\n| summarize arg_max(['Last Updated'],*) by ['Detection Name'], URL\r\n| extend ['Data Source Type'] = case(['Entity UID'] startswith \"AWS\", \"AWS\", \r\n                                        ['Entity UID'] startswith \"SAML\", \"AWS\",\r\n                                        ['Entity UID'] startswith \"O365\", \"M365/AAD\",\r\n                                        ['Entity UID'] startswith \"M365\", \"M365/AAD\",\r\n                                        ['Entity UID'] startswith \"Azure\", \"M365/AAD\",\"Network\")\r\n| where ('*' in ({DataSource}) or ['Data Source Type'] in ({DataSource}))\r\n| where ('*' in ({DetectionCategory}) or ['Detection Category'] in ({DetectionCategory})) and ('*' in ({DetectionType}) or ['Detection Name'] in ({DetectionType})) and ['Vectra Pivot'] == '{P_detection_link}'\r\n| extend ['Detection Category'] = case(['Detection Category']==\"botnet\",\"Botnet\",['Detection Category']==\"command_and_control\",\"Command and Control\",['Detection Category']==\"reconnaissance\",\"Reconnaissance\",['Detection Category']==\"lateral_movement\",\"Lateral Movement\",['Detection Category']==\"exfiltration\",\"Exfiltration\",\"Unknown\")\r\n| extend [\"Detection Details\"] = parse_json([\"Detection Details\"])[0]\r\n| project ID, ['Detection Category'], Threat, Certainty, ['Is Triaged'], [\"Detection Name\"], [\"D Type Vname\"], [\"Detection ID\"], [\"Vectra Pivot\"], [\"Entity ID\"], URL, [\"Entity UID\"], [\"Last Updated\"], [\"Detection Details\"], Severity, ['Source IP']",
                           "size": 4,
                           "showAnalytics": true,
                           "title": "Selected Detection View Data",
@@ -780,6 +804,14 @@
                                 "formatter": 7,
                                 "formatOptions": {
                                   "linkTarget": "Url"
+                                }
+                              },
+                              {
+                                "columnMatch": "Detection Details",
+                                "formatter": 7,
+                                "formatOptions": {
+                                  "linkTarget": "CellDetails",
+                                  "linkIsContextBlade": true
                                 }
                               }
                             ]
@@ -985,7 +1017,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "VectraAudits\r\n| where ['Event Timestamp'] {TimeRange}\r\n| summarize arg_max(TimeGenerated,*) by ID\r\n| where ('*' in ({ResultStatus}) or Status in ({ResultStatus}))\r\n| project-rename Role = ['User Role']\r\n| project ['Event Timestamp'], Username, Role, ['Source IP'], Message, Status, ['Event Data']\r\n| sort by ['Event Timestamp'] desc",
+                    "query": "VectraAudits\r\n| where ['Event Timestamp'] {TimeRange}\r\n| summarize arg_max(TimeGenerated,*) by ID\r\n| where ('*' in ({ResultStatus}) or Status in ({ResultStatus}))\r\n| extend ['Event Data'] = parse_json(['Event Data'])[0]\r\n| project-rename Role = ['User Role']\r\n| project ['Event Timestamp'], Username, Role, ['Source IP'], Message, Status, ['Event Data']\r\n| sort by ['Event Timestamp'] desc",
                     "size": 0,
                     "showAnalytics": true,
                     "title": "Audit View",
@@ -994,6 +1026,16 @@
                     "queryType": 0,
                     "resourceType": "microsoft.operationalinsights/workspaces",
                     "gridSettings": {
+                      "formatters": [
+                        {
+                          "columnMatch": "Event Data",
+                          "formatter": 7,
+                          "formatOptions": {
+                            "linkTarget": "CellDetails",
+                            "linkIsContextBlade": true
+                          }
+                        }
+                      ],
                       "rowLimit": 10000,
                       "filter": true
                     }
