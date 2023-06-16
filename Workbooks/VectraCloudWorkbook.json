@@ -1188,7 +1188,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "VectraLockdown\r\n| where [\"Locked Date\"] {TimeRange} or ([\"Unlock Date\"] {TimeRange} and [\"Unlock Date\"] <= now())\r\n| summarize arg_max(TimeGenerated,*) by [\"Entity Name\"], Type, [\"Locked Date\"], [\"Unlock Date\"], [\"Locked By\"]\r\n| where ('*' in ({EntityType}) or Type in ({EntityType}))\r\n| extend current_status = case([\"Locked Date\"] <= now() and now() < [\"Unlock Date\"], \"True\", \"False\")\r\n| where ('*' in ({EntityLocked}) or current_status in ({EntityLocked}))\r\n| sort by [\"Locked Date\"] desc\r\n| project [\"Entity Name\"], [\"Entity Type\"] = Type, [\"Entity Locked\"] = current_status, [\"Locked By\"], [\"Locked Date\"], [\"Unlock Date\"]",
+                    "query": "VectraLockdown\r\n| where case('{TimeRange}' contains 'ago', [\"Locked Date\"] {TimeRange} or ([\"Unlock Date\"] {TimeRange} and [\"Unlock Date\"] <= now()), [\"Locked Date\"] {TimeRange} or [\"Unlock Date\"] {TimeRange})\r\n| summarize arg_max(TimeGenerated, *) by [\"Entity Name\"], Type, [\"Locked Date\"], [\"Unlock Date\"], [\"Locked By\"]\r\n| where ('*' in ({EntityType}) or Type in ({EntityType}))\r\n| extend current_status = case([\"Locked Date\"] <= now() and now() < [\"Unlock Date\"], \"True\", \"False\")\r\n| where ('*' in ({EntityLocked}) or current_status in ({EntityLocked}))\r\n| sort by [\"Locked Date\"] desc\r\n| project [\"Entity Name\"], [\"Entity Type\"] = Type, [\"Entity Locked\"] = current_status, [\"Locked By\"], [\"Locked Date\"], [\"Unlock Date\"]",
                     "size": 0,
                     "showAnalytics": true,
                     "title": "Lockdown View",
