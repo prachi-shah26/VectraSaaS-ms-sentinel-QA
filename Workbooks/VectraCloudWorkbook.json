@@ -229,7 +229,7 @@
                         "type": 3,
                         "content": {
                           "version": "KqlItem/1.0",
-                          "query": "VectraEntityScoring\r\n| where ['Last Updated'] {timerange}\r\n| summarize arg_max(['Last Updated'],*) by Name, ['Vectra Pivot']\r\n| where ('*' in ({View}) or [\"Is Prioritized\"] in ({View})) and ('*' in ({EntityType}) or Type in ({EntityType}))\r\n| extend ['Data Source Type'] = case(Name startswith \"AWS\", \"AWS\", \r\n                                        Name startswith \"SAML\", \"AWS\",\r\n                                        Name startswith \"O365\", \"M365/AAD\",\r\n                                        Name startswith \"M365\", \"M365/AAD\",\r\n                                        Name startswith \"Azure\", \"M365/AAD\",\"Network\")\r\n| where ('*' in ({DataSource}) or ['Data Source Type'] in ({DataSource}))\r\n| extend priority = case(\r\n    ['Is Prioritized'] == true, \"Prioritized\",\r\n    ['Is Prioritized'] == false, \"Not Prioritized\",\r\n    \"Unknown\"\r\n)\r\n| summarize count() by priority\r\n| order by priority desc",
+                          "query": "VectraEntityScoring\r\n| where ['Last Updated'] {timerange}\r\n| summarize arg_max(['Last Updated'],*) by ['Entity ID'], Type\r\n| where ('*' in ({View}) or [\"Is Prioritized\"] in ({View})) and ('*' in ({EntityType}) or Type in ({EntityType}))\r\n| extend ['Data Source Type'] = case(Name startswith \"AWS\", \"AWS\", \r\n                                        Name startswith \"SAML\", \"AWS\",\r\n                                        Name startswith \"O365\", \"M365/AAD\",\r\n                                        Name startswith \"M365\", \"M365/AAD\",\r\n                                        Name startswith \"Azure\", \"M365/AAD\",\"Network\")\r\n| where ('*' in ({DataSource}) or ['Data Source Type'] in ({DataSource}))\r\n| extend priority = case(\r\n    ['Is Prioritized'] == true, \"Prioritized\",\r\n    ['Is Prioritized'] == false, \"Not Prioritized\",\r\n    \"Unknown\"\r\n)\r\n| summarize count() by priority\r\n| order by priority desc",
                           "size": 3,
                           "title": "Entity Count by Priority",
                           "queryType": 0,
@@ -286,7 +286,7 @@
                         "type": 3,
                         "content": {
                           "version": "KqlItem/1.0",
-                          "query": "VectraEntityScoring\r\n| where ['Last Updated'] {timerange} \r\n| summarize arg_max(['Last Updated'],*) by Name, ['Vectra Pivot']\r\n| where ('*' in ({View}) or [\"Is Prioritized\"] in ({View})) and ('*' in ({EntityType}) or Type in ({EntityType}))\r\n| extend ['Data Source Type'] = case(Name startswith \"AWS\", \"AWS\", \r\n                                        Name startswith \"SAML\", \"AWS\",\r\n                                        Name startswith \"O365\", \"M365/AAD\",\r\n                                        Name startswith \"M365\", \"M365/AAD\",\r\n                                        Name startswith \"Azure\", \"M365/AAD\",\"Network\")\r\n| extend ['Entity Name'] = extract(\"^(AWS:|SAML:|O365:|M365:|Azure:)?(.*)$\",2, Name)\r\n| where ('*' in ({DataSource}) or ['Data Source Type'] in ({DataSource}))\r\n| sort by ['Urgency Score'] desc, Importance desc\r\n| extend Importance = case(\r\n    Importance == 0, \"Low\",\r\n    Importance == 1, \"Medium\",\r\n    Importance == 2, \"High\",\r\n    \"Unknown\"\r\n), Velocity = case(\r\n    Velocity == 0, \"Low\",\r\n    Velocity == 1, \"Medium\",\r\n    Velocity == 2, \"High\",\r\n    \"Unknown\"\r\n)\r\n| project ['Urgency Score'], Importance, ['Data Source Type'], ['Entity Name'], ['Vectra Pivot'], ['Last Updated'],  Velocity, ['Attack Rating'], ['Attack Profile']",
+                          "query": "VectraEntityScoring\r\n| where ['Last Updated'] {timerange} \r\n| summarize arg_max(['Last Updated'],*) by ID, Type\r\n| where ('*' in ({View}) or [\"Is Prioritized\"] in ({View})) and ('*' in ({EntityType}) or Type in ({EntityType}))\r\n| extend ['Data Source Type'] = case(Name startswith \"AWS\", \"AWS\", \r\n                                        Name startswith \"SAML\", \"AWS\",\r\n                                        Name startswith \"O365\", \"M365/AAD\",\r\n                                        Name startswith \"M365\", \"M365/AAD\",\r\n                                        Name startswith \"Azure\", \"M365/AAD\",\"Network\")\r\n| extend ['Entity Name'] = extract(\"^(AWS:|SAML:|O365:|M365:|Azure:)?(.*)$\",2, Name)\r\n| where ('*' in ({DataSource}) or ['Data Source Type'] in ({DataSource}))\r\n| sort by ['Urgency Score'] desc, Importance desc\r\n| extend Importance = case(\r\n    Importance == 0, \"Low\",\r\n    Importance == 1, \"Medium\",\r\n    Importance == 2, \"High\",\r\n    \"Unknown\"\r\n), Velocity = case(\r\n    Velocity == 0, \"Low\",\r\n    Velocity == 1, \"Medium\",\r\n    Velocity == 2, \"High\",\r\n    \"Unknown\"\r\n)\r\n| project ['Entity Name'], ['Data Source Type'], ['Urgency Score'], Importance, Prioritized = ['Is Prioritized'], Velocity, ['Attack Rating'], ['Last Updated'], ['Vectra Pivot']",
                           "size": 0,
                           "showAnalytics": true,
                           "title": "Entity View",
@@ -335,7 +335,7 @@
                         "type": 3,
                         "content": {
                           "version": "KqlItem/1.0",
-                          "query": "VectraEntityScoring\r\n| where ['Last Updated'] {timerange} \r\n| summarize arg_max(['Last Updated'],*) by Name, ['Vectra Pivot']\r\n| where ('*' in ({View}) or [\"Is Prioritized\"] in ({View})) and ('*' in ({EntityType}) or Type in ({EntityType}))\r\n| extend ['Data Source Type'] = case(Name startswith \"AWS\", \"AWS\", \r\n                                        Name startswith \"SAML\", \"AWS\",\r\n                                        Name startswith \"O365\", \"M365/AAD\",\r\n                                        Name startswith \"M365\", \"M365/AAD\",\r\n                                        Name startswith \"Azure\", \"M365/AAD\",\"Network\")\r\n| extend ['Entity Name'] = extract(\"^(AWS:|SAML:|O365:|M365:|Azure:)?(.*)$\",2, Name)\r\n| where ('*' in ({DataSource}) or ['Data Source Type'] in ({DataSource})) and ['Vectra Pivot'] == '{P_deep_url}'\r\n| project ID, ['Entity ID'], ['Data Source Type'], ['Entity Name'], Name, Importance, ['Type'], ['Is Prioritized'], Severity, [\"Urgency Score\"], ['Vectra Pivot'], Category, ['Last Detection URL'], ['Last Detection Type'], [\"Last Detection ID\"], ['Active Detection Types'], ['Last Updated'], ['Breadth Contrib'], Velocity, ['Attack Rating'], ['Attack Profile']",
+                          "query": "VectraEntityScoring\r\n| where ['Last Updated'] {timerange} \r\n| summarize arg_max(['Last Updated'],*) by ID, Type\r\n| where ('*' in ({View}) or [\"Is Prioritized\"] in ({View})) and ('*' in ({EntityType}) or Type in ({EntityType}))\r\n| extend ['Data Source Type'] = case(Name startswith \"AWS\", \"AWS\", \r\n                                        Name startswith \"SAML\", \"AWS\",\r\n                                        Name startswith \"O365\", \"M365/AAD\",\r\n                                        Name startswith \"M365\", \"M365/AAD\",\r\n                                        Name startswith \"Azure\", \"M365/AAD\",\"Network\")\r\n| extend ['Entity Name'] = extract(\"^(AWS:|SAML:|O365:|M365:|Azure:)?(.*)$\",2, Name)\r\n| where ('*' in ({DataSource}) or ['Data Source Type'] in ({DataSource})) and ['Vectra Pivot'] == '{P_deep_url}'\r\n| project ID, ['Entity ID'], ['Data Source Type'], ['Entity Name'], Name, Importance, ['Type'], ['Is Prioritized'], Severity, [\"Urgency Score\"], ['Vectra Pivot'], Category, ['Last Detection URL'], ['Last Detection Type'], [\"Last Detection ID\"], ['Active Detection Types'], ['Last Updated'], ['Breadth Contrib'], Velocity, ['Attack Rating']",
                           "size": 4,
                           "showAnalytics": true,
                           "title": "Selected Entity View data",
@@ -948,6 +948,27 @@
                         "value": [
                           "success"
                         ]
+                      },
+                      {
+                        "id": "a5e78ed7-0bde-4116-90fc-c37bdc106d19",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "Username",
+                        "type": 2,
+                        "isRequired": true,
+                        "multiSelect": true,
+                        "quote": "'",
+                        "delimiter": ",",
+                        "query": "VectraAudits\r\n| where ['Event Timestamp'] {TimeRange}\r\n| distinct Username",
+                        "typeSettings": {
+                          "additionalResourceOptions": [
+                            "value::all"
+                          ],
+                          "selectAllValue": "*",
+                          "showDefault": false
+                        },
+                        "defaultValue": "value::all",
+                        "queryType": 0,
+                        "resourceType": "microsoft.operationalinsights/workspaces"
                       }
                     ],
                     "style": "pills",
@@ -960,7 +981,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "VectraAudits\r\n| where ['Event Timestamp'] {TimeRange}\r\n| summarize arg_max(TimeGenerated,*) by ID\r\n| where ('*' in ({ResultStatus}) or Status in ({ResultStatus}))\r\n| extend Status = tolower(Status)\r\n| extend Result_status = case(\r\n    Status == \"success\", \"Success\",\r\n    Status == \"failure\", \"Failure\",\r\n    Status == \"\",\"N/A\"\r\n    ,\"Unknown\"\r\n)\r\n| extend importance = case(\r\n    Result_status == \"Success\", 0,\r\n    Result_status == \"Failure\", 1,\r\n    Result_status == \"NA\",2\r\n    ,3\r\n)\r\n| summarize count() by Result_status, importance\r\n| sort by importance asc",
+                    "query": "VectraAudits\r\n| where ['Event Timestamp'] {TimeRange}\r\n| summarize arg_max(TimeGenerated,*) by ID\r\n| where ('*' in ({ResultStatus}) or Status in ({ResultStatus}))\r\n| where ('*' in ({Username}) or Username in ({Username}))\r\n| extend Status = tolower(Status)\r\n| extend Result_status = case(\r\n    Status == \"success\", \"Success\",\r\n    Status == \"failure\", \"Failure\",\r\n    Status == \"\",\"N/A\"\r\n    ,\"Unknown\"\r\n)\r\n| extend importance = case(\r\n    Result_status == \"Success\", 0,\r\n    Result_status == \"Failure\", 1,\r\n    Result_status == \"NA\",2\r\n    ,3\r\n)\r\n| summarize count() by Result_status, importance\r\n| sort by importance asc",
                     "size": 3,
                     "title": "Audit Logs Count",
                     "queryType": 0,
@@ -1017,7 +1038,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "VectraAudits\r\n| where ['Event Timestamp'] {TimeRange}\r\n| summarize arg_max(TimeGenerated,*) by ID\r\n| where ('*' in ({ResultStatus}) or Status in ({ResultStatus}))\r\n| extend ['Event Data'] = parse_json(['Event Data'])[0]\r\n| project-rename Role = ['User Role']\r\n| project ['Event Timestamp'], Username, Role, ['Source IP'], Message, Status, ['Event Data']\r\n| sort by ['Event Timestamp'] desc",
+                    "query": "VectraAudits\r\n| where ['Event Timestamp'] {TimeRange}\r\n| summarize arg_max(TimeGenerated,*) by ID\r\n| where ('*' in ({ResultStatus}) or Status in ({ResultStatus}))\r\n| where ('*' in ({Username}) or Username in ({Username}))\r\n| extend Status = case(isnotempty(Status), Status, '-')\r\n| extend ['Event Data'] = parse_json(['Event Data'])[0]\r\n| project-rename Role = ['User Role']\r\n| project ['Event Timestamp'], Username, Role, ['Source IP'], Status, Message, ['Event Data']\r\n| sort by ['Event Timestamp'] desc",
                     "size": 0,
                     "showAnalytics": true,
                     "title": "Audit View",
