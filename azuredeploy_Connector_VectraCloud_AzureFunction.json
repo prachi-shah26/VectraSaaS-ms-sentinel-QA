@@ -65,6 +65,13 @@
                 "Lockdown_Data"
             ]
         },
+        "HealthTableName": {
+            "type": "string",
+            "defaultValue": "Health_Data",
+            "allowedValues": [
+                "Health_Data"
+            ]
+        },
         "LogLevel": {
             "type": "string",
             "defaultValue": "INFO",
@@ -82,6 +89,13 @@
             "defaultValue": "0 0/10 * * * *",
             "metadata": {
                 "description": "Enter a valid Quartz cron-expression. The default value is every 10 minutes starting from Minute :00 of every hour."
+            }
+        },
+        "HealthSchedule": {
+            "type": "string",
+            "defaultValue": "0 1/10 * * * *",
+            "metadata": {
+                "description": "Enter a valid Quartz cron-expression. The default value is every 10 minutes starting from Minute :01 of every hour."
             }
         },
         "DetectionsSchedule": {
@@ -241,11 +255,13 @@
                         "Detections_Table_Name": "[parameters('DetectionsTableName')]",
                         "Entity_Scoring_Table_Name": "[parameters('EntityScoringTableName')]",
                         "Lockdown_Table_Name": "[parameters('LockdownTableName')]",
+                        "Health_Table_Name": "[parameters('HealthTableName')]",
                         "LogLevel": "[parameters('LogLevel')]",
                         "DetectionsSchedule": "[parameters('DetectionsSchedule')]",
                         "AuditsSchedule": "[parameters('AuditsSchedule')]",
                         "EntityScoringSchedule": "[parameters('EntityScoringSchedule')]",
                         "LockdownSchedule": "[parameters('LockdownSchedule')]",
+                        "HealthSchedule": "[parameters('HealthSchedule')]",
                         "WEBSITE_RUN_FROM_PACKAGE": "https://aka.ms/sentinel-VectraCloudAPI-functionapp"
                     }
                 }

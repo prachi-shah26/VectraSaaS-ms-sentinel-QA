@@ -37,6 +37,14 @@
                   "linkLabel": "Lockdown",
                   "subTarget": "Lockdown",
                   "style": "link"
+                },
+                {
+                  "id": "2a426647-ce0b-44ef-8603-bae6bd8e2343",
+                  "cellValue": "setTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "Health",
+                  "subTarget": "Health",
+                  "style": "link"
                 }
               ]
             },
@@ -1242,6 +1250,110 @@
               "value": "Lockdown"
             },
             "name": "lockdown"
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "items": [
+                {
+                  "type": 12,
+                  "content": {
+                    "version": "NotebookGroup/1.0",
+                    "groupType": "editable",
+                    "items": [
+                      {
+                        "type": 9,
+                        "content": {
+                          "version": "KqlParameterItem/1.0",
+                          "parameters": [
+                            {
+                              "id": "9ec409ef-a68f-486e-93ae-602d614ff45f",
+                              "version": "KqlParameterItem/1.0",
+                              "name": "Search",
+                              "type": 1,
+                              "timeContext": {
+                                "durationMs": 86400000
+                              },
+                              "value": "*"
+                            }
+                          ],
+                          "style": "pills",
+                          "queryType": 0,
+                          "resourceType": "microsoft.operationalinsights/workspaces"
+                        },
+                        "name": "parameters - 2"
+                      },
+                      {
+                        "type": 3,
+                        "content": {
+                          "version": "KqlItem/1.0",
+                          "query": "VectraHealth\r\n| top 1 by TimeGenerated\r\n| extend Network = parse_json(Network)\r\n| extend ['Aggregated Peak Traffic (MB/s)'] = Network[0].traffic.brain.aggregated_peak_traffic_mbps\r\n| where (\"*\" == '{Search}' or ['Last Updated'] contains '{Search}') or (\"*\" == '{Search}' or tostring(['CPU Usage - User (%)']) contains '{Search}')  or (\"*\" == '{Search}' or tostring(['CPU Usage - System (%)']) contains '{Search}')  or (\"*\" == '{Search}' or tostring(['CPU Usage - Idle (%)']) contains '{Search}')  or (\"*\" == '{Search}' or tostring(['Disk Utilization (%)']) contains '{Search}')  or (\"*\" == '{Search}' or tostring(['Memory Utilization (%)']) contains '{Search}')  or (\"*\" == '{Search}' or tostring(['Power Status']) contains '{Search}')  or (\"*\" == '{Search}' or tostring(['Power Error']) contains '{Search}')  or (\"*\" == '{Search}' or tostring(['Aggregated Peak Traffic (MB/s)']) contains '{Search}')\r\n| project ['Last Updated'], ['CPU Usage - User (%)'], ['CPU Usage - System (%)'], ['CPU Usage - Idle (%)'], ['Disk Utilization (%)'], ['Memory Utilization (%)'], ['Power Status'], ['Power Error'], ['Aggregated Peak Traffic (MB/s)']\r\n| sort by ['Last Updated'] desc",
+                          "size": 0,
+                          "showAnalytics": true,
+                          "title": "System View",
+                          "timeContext": {
+                            "durationMs": 2592000000
+                          },
+                          "showRefreshButton": true,
+                          "showExportToExcel": true,
+                          "queryType": 0,
+                          "resourceType": "microsoft.operationalinsights/workspaces",
+                          "gridSettings": {
+                            "rowLimit": 10000,
+                            "filter": true
+                          }
+                        },
+                        "name": "System View",
+                        "styleSettings": {
+                          "showBorder": true
+                        }
+                      },
+                      {
+                        "type": 3,
+                        "content": {
+                          "version": "KqlItem/1.0",
+                          "query": "VectraHealth\r\n| top 1 by TimeGenerated\r\n| extend Sensors = parse_json(Sensors)\r\n| mvapply Sensors on (project Sensors.name, Sensors.ip_address, Sensors.d_link_status, Sensors.d_aggregated_peak_traffic, Sensors.d_connectivity_status, Sensors.d_connectivity_error, Sensors.d_trafficdrop_status, Sensors.d_trafficdrop_error)\r\n| where (\"*\" == '{Search}' or tostring(Sensors_name) contains '{Search}') or (\"*\" == '{Search}' or tostring(Sensors_ip_address) contains '{Search}')  or (\"*\" == '{Search}' or tostring(Sensors_d_link_status) contains '{Search}')  or (\"*\" == '{Search}' or tostring(Sensors_d_connectivity_status) contains '{Search}')  or (\"*\" == '{Search}' or tostring(Sensors_d_connectivity_error) contains '{Search}')  or (\"*\" == '{Search}' or tostring(Sensors_d_trafficdrop_status) contains '{Search}')  or (\"*\" == '{Search}' or tostring(Sensors_d_trafficdrop_error) contains '{Search}')  or (\"*\" == '{Search}' or tostring(Sensors_d_aggregated_peak_traffic) contains '{Search}')\r\n| project Name = Sensors_name, ['IP Address'] = Sensors_ip_address, ['Connectivity Status'] = Sensors_d_connectivity_status, ['Connectivity Error'] = Sensors_d_connectivity_error, ['Traffic Drop Status'] = Sensors_d_trafficdrop_status, ['Traffic Drop Error'] = Sensors_d_trafficdrop_error, ['Aggregated Peak Traffic (MB/s)'] =  Sensors_d_aggregated_peak_traffic, ['Interface Link Status'] = Sensors_d_link_status",
+                          "size": 0,
+                          "showAnalytics": true,
+                          "title": "Sensors View",
+                          "timeContext": {
+                            "durationMs": 2592000000
+                          },
+                          "showRefreshButton": true,
+                          "showExportToExcel": true,
+                          "queryType": 0,
+                          "resourceType": "microsoft.operationalinsights/workspaces",
+                          "gridSettings": {
+                            "rowLimit": 10000,
+                            "filter": true
+                          }
+                        },
+                        "name": "Sensor View",
+                        "styleSettings": {
+                          "showBorder": true
+                        }
+                      }
+                    ]
+                  },
+                  "name": "group - 1"
+                },
+                {
+                  "type": 1,
+                  "content": {
+                    "json": "📝 ***Refresh the web page to fetch details of recently collected events***"
+                  },
+                  "name": "text - 0"
+                }
+              ]
+            },
+            "conditionalVisibility": {
+              "parameterName": "setTab",
+              "comparison": "isEqualTo",
+              "value": "Health"
+            },
+            "name": "health"
           }
         ]
       },
