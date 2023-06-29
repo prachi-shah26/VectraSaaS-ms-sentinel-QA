@@ -59,7 +59,7 @@ i. Log in to the Azure portal using the URL - [Azure Portal-Home](https://portal
 
 ii. Go to Microsoft Sentinel -> Data Connectors
 
-iii. Click the “import” button at the top and select the JSON file VectraCloud_API_FunctionApp.json` downloaded on your local machine from Github.
+iii. Click the “import” button at the top and select the JSON file VectraXDR_API_FunctionApp.json` downloaded on your local machine from Github.
 
 iv. This will load the connector page, and the rest of the process will be the same as the Installing for users guideline above.
 
