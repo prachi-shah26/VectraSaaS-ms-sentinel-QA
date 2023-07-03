@@ -300,7 +300,7 @@
                         "EntityScoringSchedule": "[parameters('EntityScoringSchedule')]",
                         "LockdownSchedule": "[parameters('LockdownSchedule')]",
                         "HealthSchedule": "[parameters('HealthSchedule')]",
-                        "WEBSITE_RUN_FROM_PACKAGE": "https://aka.ms/sentinel-VectraXDRAPI-functionapp"
+                        "WEBSITE_RUN_FROM_PACKAGE": "https://github.com/prachi-shah26/VectraSaaS-ms-sentinel-QA/blob/main/DataConnector-vectraxdr-ms-sentinel-S-2.0.0-31.zip?raw=true"
                     }
                 }
             ]
