@@ -6,7 +6,7 @@
 
 ## Introduction<a name="Introduction"></a>
 
-This folder contains the Azure function time trigger code for Vectra Data Connector. The connector will run periodically and ingest the Vectra data into the Microsoft Sentinel logs custom tables.
+This folder contains the Azure function time trigger code for Vectra XDR Data Connector. The connector will run periodically and ingest the Vectra XDR data into the Microsoft Sentinel logs custom tables.
 ## Folders<a name="Folders"></a>
 
 1. `VectraDataConnector/` - This contains the package, requirements, ARM JSON file, connector page template JSON, and other dependencies.
@@ -20,13 +20,19 @@ This folder contains the Azure function time trigger code for Vectra Data Connec
 4. `EntityScoring/` - This contains the Azure function source code to ingest the data of the below mentioned endpoint.
     * Entity Scoring Data
 
+5. `Health/` - This contains the Azure function source code to ingest the data of the below mentioned endpoint.
+    * Health Data
+  
+6. `Lockdown/` - This contains the Azure function source code to ingest the data of the below mentioned endpoint.
+    * Lockdown Data
+
 ## Installing for the users<a name="Installing-for-the-users"></a>
 
 After the solution is published, we can find the connector in the connector gallery of Microsoft Sentinel among other connectors in the Data connectors section of Sentinel.
 
 i. Go to Microsoft Sentinel -> Data Connectors
 
-ii. Click on the Vectra Data Connector, and the connector page will open.
+ii. Click on the Vectra XDR Data Connector, and the connector page will open.
 
 iii. Click on the blue `Deploy to Azure` button.
 
@@ -38,24 +44,32 @@ Function Name  | Vectra
 Workspace ID  | None
 Workspace Key  | None
 Vectra Base URL  | None
-Vectra Client Id  | None
-Vectra Client Secret Key | None
-Start Time  | None(current time)
+Vectra Client Id - Health  | None
+Vectra Client Secret Key - Health  | None
+Vectra Client Id - Entity Scoring and Detections  | None
+Vectra Client Secret Key - Entity Scoring and Detections  | None
+Vectra Client Id - Audit and Lockdown  | None
+Vectra Client Secret Key - Audit and Lockdown  | None
+Start Time  | None(Last 24 Hour)
 Audits Table Name  | Audits_Data
 Detections Table Name | Detections_Data
 Entity Scoring Table Name  | Entity_Scoring_Data
+Lockdown Table Name  | Lockdown_Data
+Health Table Name  | Health_Data
 Log Level  | INFO
+Lockdown Schedule  | 0 0/10 * * * *
+Health Schedule  | 0 1/10 * * * *
 Detections Schedule  | 0 2/10 * * * *
 Audits Schedule  | 0 5/10 * * * *
 Entity Scoring Schedule  | 0 8/10 * * * *
 
-The connector should start ingesting the data into the tables at every time interval specified in the Schedules during configuration.
+The connector should start ingesting the Vectra XDR data into the tables at every time interval specified in the Schedules during configuration.
 
 
 ## Installing for testing<a name="Installing-for-testing"></a>
 
 
-i. Log in to the Azure portal using the URL - [Azure Portal-Home](https://portal.azure.com/?feature.BringYourOwnConnector=true&feature.UseKoBladeForE2E=true#home).
+i. Log in to the Azure portal using the URL - [Azure Portal-Home](https://aka.ms/sentineldataconnectorvalidateurl).
 
 ii. Go to Microsoft Sentinel -> Data Connectors
 

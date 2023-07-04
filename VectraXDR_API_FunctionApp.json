@@ -2,7 +2,7 @@
     "id": "VectraXDR",
     "title": "Vectra XDR",
     "publisher": "Vectra",
-    "descriptionMarkdown": "The [Vectra XDR](https://www.vectra.ai/) connector gives the capability to ingest Vectra Detections, Audits and Entity Scoring data into Microsoft Sentinel through the Vectra REST API. Refer to the API documentation: `https://support.vectra.ai/s/article/KB-VS-1629` for more information.",
+    "descriptionMarkdown": "The [Vectra XDR](https://www.vectra.ai/) connector gives the capability to ingest Vectra Detections, Audits, Entity Scoring, Lockdown and Health data into Microsoft Sentinel through the Vectra REST API. Refer to the API documentation: `https://support.vectra.ai/s/article/KB-VS-1666` for more information.",
     "additionalRequirementBanner": "These queries and workbooks are dependent on a parser based on Kusto to work as expected. Follow the steps to use this Kusto functions alias **VectraDetections** in queries and workbooks [Follow steps to get this VectraDetections Kusto functions>](https://aka.ms/sentinel-VectraDetections-parser), **VectraAudits** in queries and workbooks [Follow steps to get this VectraAudits Kusto functions>](https://aka.ms/sentinel-VectraAudits-parser) and **VectraEntityScoring** in queries and workbooks [Follow steps to get this VectraEntityScoring Kusto functions>](https://aka.ms/sentinel-VectraEntityScoring-parser).",
     "graphQueries": [
         {
@@ -19,6 +19,16 @@
             "metricName": "Total Entity Scoring data received",
             "legend": "Entity_Scoring_Data_CL",
             "baseQuery": "Entity_Scoring_Data_CL"
+        },
+        {
+            "metricName": "Total Lockdown data received",
+            "legend": "Lockdown_Data_CL",
+            "baseQuery": "Lockdown_Data_CL"
+        },
+        {
+            "metricName": "Total Health data received",
+            "legend": "Health_Data_CL",
+            "baseQuery": "Health_Data_CL"
         }
     ],
     "sampleQueries": [
@@ -33,6 +43,14 @@
         {
             "description" : "Vectra Entity Scoring Events - All Entity Scoring Events.",
             "query": "Entity_Scoring_Data_CL\n | sort by TimeGenerated desc"
+        },
+        {
+            "description" : "Vectra Lockdown Events - All Lockdown Events.",
+            "query": "Lockdown_Data_CL\n | sort by TimeGenerated desc"
+        },
+        {
+            "description" : "Vectra Health Events - All Health Events.",
+            "query": "Health_Data_CL\n | sort by TimeGenerated desc"
         }
     ],
     "dataTypes": [
@@ -47,6 +65,14 @@
         {
             "name": "Entity_Scoring_Data_CL",
             "lastDataReceivedQuery": "Entity_Scoring_Data_CL\n            | summarize Time = max(TimeGenerated)\n            | where isnotempty(Time)"
+        },
+        {
+            "name": "Lockdown_Data_CL",
+            "lastDataReceivedQuery": "Lockdown_Data_CL\n            | summarize Time = max(TimeGenerated)\n            | where isnotempty(Time)"
+        },
+        {
+            "name": "Health_Data_CL",
+            "lastDataReceivedQuery": "Health_Data_CL\n            | summarize Time = max(TimeGenerated)\n            | where isnotempty(Time)"
         }
     ],
     "connectivityCriterias": [
@@ -66,6 +92,18 @@
             "type": "IsConnectedQuery",
             "value": [
                 "Entity_Scoring_Data_CL\n            | summarize LastLogReceived = max(TimeGenerated)\n            | project IsConnected = LastLogReceived > ago(30d)"
+            ]
+        },
+        {
+            "type": "IsConnectedQuery",
+            "value": [
+                "Lockdown_Data_CL\n            | summarize LastLogReceived = max(TimeGenerated)\n            | project IsConnected = LastLogReceived > ago(30d)"
+            ]
+        },
+        {
+            "type": "IsConnectedQuery",
+            "value": [
+                "Health_Data_CL\n            | summarize LastLogReceived = max(TimeGenerated)\n            | project IsConnected = LastLogReceived > ago(30d)"
             ]
         }
     ],
@@ -102,7 +140,7 @@
         },
         {
             "name": "REST API Credentials/permissions",
-            "description": "**Vectra Client ID** and **Client Secret** is required.  See the documentation to learn more about API on the `https://support.vectra.ai/s/article/KB-VS-1629`."
+            "description": "**Vectra Client ID** and **Client Secret**  is required for Health, Entity Scoring, Detections, Lockdown and Audit data collection.  See the documentation to learn more about API on the `https://support.vectra.ai/s/article/KB-VS-1666`."
         }
         ]
     },
@@ -115,7 +153,7 @@
             "description": ">**(Optional Step)** Securely store workspace and API authorization key(s) or token(s) in Azure Key Vault. Azure Key Vault provides a secure mechanism to store and retrieve key values. [Follow these instructions](https://docs.microsoft.com/azure/app-service/app-service-key-vault-references) to use Azure Key Vault with an Azure Function App."
         },
 		{
-			"description": ">**NOTE:** This data connector depends on a parser based on a Kusto Function to work as expected. Follow these steps for [Detections Parser](https://aka.ms/sentinel-VectraDetections-parser), [Audits Parser](https://aka.ms/sentinel-VectraAudits-parser) and [Entity Scoring Parser](https://aka.ms/sentinel-VectraEntityScoring-parser) to create the Kusto functions alias, **VectraDetections**, **VectraAudits** and **VectraEntityScoring**"
+			"description": ">**NOTE:** This data connector depends on a parser based on a Kusto Function to work as expected. Follow these steps for [Detections Parser](https://aka.ms/sentinel-VectraDetections-parser), [Audits Parser](https://aka.ms/sentinel-VectraAudits-parser), [Entity Scoring Parser](https://aka.ms/sentinel-VectraEntityScoring-parser), [Lockdown Parser](https://aka.ms/sentinel-VectraLockdown-parser) and [Health Parser](https://aka.ms/sentinel-VectraHealth-parser) to create the Kusto functions alias, **VectraDetections**, **VectraAudits**, **VectraEntityScoring**, **VectraLockdown** and **VectraHealth**."
 		},
         {
             "title": "",
@@ -146,7 +184,7 @@
         },
         {
             "title": "Option 1 - Azure Resource Manager (ARM) Template",
-            "description": "Use this method for automated deployment of the Vectra connector.\n\n1. Click the **Deploy to Azure** button below. \n\n\t[![Deploy To Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fprachi-shah26%2FVectraSaaS-ms-sentinel-QA%2Fmain%2Fazuredeploy_Connector_VectraXDR_AzureFunction.json)\n2. Select the preferred **Subscription**, **Resource Group** and **Location**. \n3. Enter the below information : \n\t\tFunction Name \n\t\tWorkspace ID \n\t\tWorkspace Key \n\t\tVectra Base URL (https://<vectra-portal-url>) \n\t\tVectra Client ID \n\t\tVectra Client Secret \n\t\tStartTime (in MM/DD/YYYY HH:MM:SS Format) \n\t\tAudits Table Name \n\t\tDetections Table Name \n\t\tEntity Scoring Table Name \n\t\tLog Level (Default: INFO) \n\t\tDetections Schedule \n\t\tAudits Schedule \n\t\tEntity Scoring Schedule \n4. Mark the checkbox labeled **I agree to the terms and conditions stated above**. \n5. Click **Purchase** to deploy."
+            "description": "Use this method for automated deployment of the Vectra connector.\n\n1. Click the **Deploy to Azure** button below. \n\n\t[![Deploy To Azure](https://aka.ms/deploytoazurebutton)](https://aka.ms/sentinel-VectraXDRAPI-azuredeploy)\n2. Select the preferred **Subscription**, **Resource Group** and **Location**. \n3. Enter the below information : \n\t\tFunction Name \n\t\tWorkspace ID \n\t\tWorkspace Key \n\t\tVectra Base URL (https://<vectra-portal-url>) \n\t\tVectra Client Id - Health \n\t\tVectra Client Secret Key - Health \n\t\tVectra Client Id - Entity Scoring and Detections \n\t\tVectra Client Secret - Entity Scoring and Detections \n\t\tVectra Client ID - Audit and Lockdown \n\t\tVectra Client Secret - Audit and Lockdown \n\t\tStartTime (in MM/DD/YYYY HH:MM:SS Format) \n\t\tAudits Table Name \n\t\tDetections Table Name \n\t\tEntity Scoring Table Name \n\t\tLockdown Table Name \n\t\tHealth Table Name \n\t\tLog Level (Default: INFO) \n\t\tLockdown Schedule \n\t\tHealth Schedule \n\t\tDetections Schedule \n\t\tAudits Schedule \n\t\tEntity Scoring Schedule \n4. Mark the checkbox labeled **I agree to the terms and conditions stated above**. \n5. Click **Purchase** to deploy."
         },
         {
             "title": "Option 2 - Manual Deployment of Azure Functions",
@@ -158,7 +196,7 @@
         },
         {
             "title": "",
-            "description": "**2. Configure the Function App**\n\n1. In the Function App, select the Function App Name and select **Configuration**.\n2. In the **Application settings** tab, select **+ New application setting**.\n3. Add each of the following application settings individually, with their respective values (case-sensitive): \n\t\tWorkspace ID \n\t\tWorkspace Key \n\t\tVectra Base URL (https://<vectra-portal-url>) \n\t\tVectra Client ID \n\t\tVectra Client Secret \n\t\tStartTime (in MM/DD/YYYY HH:MM:SS Format) \n\t\tAudits Table Name \n\t\tDetections Table Name \n\t\tEntity Scoring Table Name \n\t\tLog Level (Default: INFO) \n\t\tDetections Schedule \n\t\tAudits Schedule \n\t\tEntity Scoring Schedule \n\t\tlogAnalyticsUri (optional) \n - Use logAnalyticsUri to override the log analytics API endpoint for dedicated cloud. For example, for public cloud, leave the value empty; for Azure GovUS cloud environment, specify the value in the following format: `https://<CustomerId>.ods.opinsights.azure.us`.\n4. Once all application settings have been entered, click **Save**."
+            "description": "**2. Configure the Function App**\n\n1. In the Function App, select the Function App Name and select **Configuration**.\n2. In the **Application settings** tab, select **+ New application setting**.\n3. Add each of the following application settings individually, with their respective values (case-sensitive): \n\t\tWorkspace ID \n\t\tWorkspace Key \n\t\tVectra Base URL (https://<vectra-portal-url>) \n\t\tVectra Client Id - Health \n\t\tVectra Client Secret Key - Health \n\t\tVectra Client Id - Entity Scoring and Detections \n\t\tVectra Client Secret - Entity Scoring and Detections \n\t\tVectra Client ID - Audit and Lockdown \n\t\tVectra Client Secret - Audit and Lockdown \n\t\tStartTime (in MM/DD/YYYY HH:MM:SS Format) \n\t\tAudits Table Name \n\t\tDetections Table Name \n\t\tEntity Scoring Table Name \n\t\tLockdown Table Name \n\t\tHealth Table Name \n\t\tLog Level (Default: INFO) \n\t\tLockdown Schedule \n\t\tHealth Schedule \n\t\tDetections Schedule \n\t\tAudits Schedule \n\t\tEntity Scoring Schedule \n\t\tlogAnalyticsUri (optional) \n - Use logAnalyticsUri to override the log analytics API endpoint for dedicated cloud. For example, for public cloud, leave the value empty; for Azure GovUS cloud environment, specify the value in the following format: `https://<CustomerId>.ods.opinsights.azure.us`.\n4. Once all application settings have been entered, click **Save**."
         }
     ]
 }
